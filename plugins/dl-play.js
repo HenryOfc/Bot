@@ -64,7 +64,7 @@ handler.before = async m => {
         clearTimeout(timeout);
         delete confirmation[m.sender];
 
-        // Mostrar mensaje de "Descargando..."
+        // Enviar el mensaje de "Descargando MP3..."
         await conn.sendMessage(m.chat, '📥 *Descargando MP3...* Por favor, espera...', 'conversation');
 
         // Solicitar MP3 desde la nueva API
@@ -89,7 +89,7 @@ handler.before = async m => {
         clearTimeout(timeout);
         delete confirmation[m.sender];
 
-        // Mostrar mensaje de "Descargando..."
+        // Enviar el mensaje de "Descargando MP4..."
         await conn.sendMessage(m.chat, '📥 *Descargando MP4...* Por favor, espera...', 'conversation');
 
         // Solicitar MP4 desde la nueva API
