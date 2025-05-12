@@ -1,4 +1,3 @@
- 
 
 import fetch from 'node-fetch'
 let handler = async (m, { conn, text, args, usedPrefix, command }) => {
@@ -45,6 +44,5 @@ let handler = async (m, { conn, text, args, usedPrefix, command }) => {
 handler.help = ['tiktok']
 handler.tags = ['dl']
 handler.command = ['tiktok', 'tt', 'tiktokimg', 'tiktokslide']
-handler.diamond = true
 
 export default handler
