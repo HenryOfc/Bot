@@ -64,9 +64,11 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
 
             const api = await (await fetch(`https://ytdl.sylphy.xyz/dl/mp4?url=${text}&quality=480`)).json();
             if (api.data.dl_url) {
+                // Marcar que la descarga ha comenzado
+                await m.react("✅");
+
                 const doc = api.data.size_mb >= limit;
                 await conn.sendFile(m.chat, api.data.dl_url, api.data.title, "", m, null, { asDocument: doc });
-                await m.react("✔️");
             } else {
                 throw `✳️ No se pudo descargar el MP4, intenta nuevamente.`;
             }
