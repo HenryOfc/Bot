@@ -1,25 +1,27 @@
+
 import yts from 'yt-search';
 import fetch from 'node-fetch';
 let limit = 320;
 let confirmation = {};
 
 let handler = async (m, { conn, command, text, args, usedPrefix }) => {
-    if (!text) throw `✳️ Ejemplo *${usedPrefix + command}* Lil Peep hate my life`;
+    if (command === 'play' || command === 'playvid') {
+        if (!text) throw `✳️ Ejemplo *${usedPrefix + command}* Lil Peep hate my life`;
 
-    let res = await yts(text);
-    let vid = res.videos[0];
-    if (!vid) throw `✳️ Vídeo/Audio no encontrado`;
+        let res = await yts(text);
+        let vid = res.videos[0];
+        if (!vid) throw `✳️ Vídeo/Audio no encontrado`;
 
-    let { title, description, thumbnail, videoId, timestamp, views, ago, url } = vid;
+        let { title, description, thumbnail, videoId, timestamp, views, ago, url } = vid;
 
-    let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
+        let who = m.quoted ? m.quoted.sender : m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender;
 
-    let chat = global.db.data.chats[m.chat];
+        let chat = global.db.data.chats[m.chat];
 
-    m.react('🎧'); 
+        m.react('🎧');
 
-    let playMessage = `
-≡ *MUSIC*
+        let playMessage = `
+≡ *HJ MUSIC*
 ┌──────────────
 ☆ 📌 *Título:* ${vid.title}
 ☆ 📆 *Fecha:* ${vid.ago}
@@ -27,54 +29,53 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
 ☆ 👀 *Vistas:* ${vid.views.toLocaleString()}
 └──────────────`;
 
-    if (business) {
-        conn.sendFile(m.chat, thumbnail, "error.jpg", `${playMessage}\n\nEscribe:\n1️⃣ para recibir el archivo como MP3.\n2️⃣ para recibir el archivo como MP4.`, m);
+        if (business) {
+            conn.sendFile(m.chat, thumbnail, "error.jpg", `${playMessage}\n\nEscribe:\n1️⃣ para recibir el archivo como MP3.\n2️⃣ para recibir el archivo como MP4.`, m);
 
-        confirmation[m.sender] = {
-            sender: m.sender,
-            to: who,
-            url: url,
-            chat: chat,
-            timeout: setTimeout(() => {
-                delete confirmation[m.sender];
-            }, 60000), // 1 minuto de espera
-        };
-    } else {
-        conn.sendButton(m.chat, playMessage, thumbnail, [
-            ['🎶 MP3', `${usedPrefix}hjmp3 ${url}`],
-            ['🎥 MP4', `${usedPrefix}hjmp4 ${url}`]
-        ], m);
+            confirmation[m.sender] = {
+                sender: m.sender,
+                to: who,
+                url: url,
+                chat: chat,
+                timeout: setTimeout(() => {
+                    delete confirmation[m.sender];
+                }, 60000), // 1 minuto de espera
+            };
+        } else {
+            conn.sendButton(m.chat, playMessage, thumbnail, [
+                ['🎶 MP3', `${usedPrefix}hjmp3 ${url}`],
+                ['🎥 MP4', `${usedPrefix}hjmp4 ${url}`]
+            ], m);
+        }
+    } else if (command === 'hjmp3') {
+        // Comando para descargar MP3
+        if (!text) throw `✳️ Ejemplo: *${usedPrefix}hjmp3 https://youtu.be/xxxxx*`;
+
+        let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp3?url=${text}&quality=128`);
+        let data = await res.json();
+
+        let { title, dl_url } = data;
+        conn.sendFile(m.chat, dl_url, `${title}.mp3`, `≡  *HJ YTDL*\n\n▢ *📌 Título* : ${title}`, m, false, { mimetype: 'audio/mpeg' });
+        m.react('✅');
+    } else if (command === 'hjmp4') {
+        // Comando para descargar MP4
+        if (!text) throw `✳️ Ejemplo: *${usedPrefix}hjmp4 https://youtu.be/xxxxx*`;
+
+        let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp4?url=${text}&quality=480`);
+        let data = await res.json();
+
+        let { title, dl_url } = data;
+        conn.sendFile(m.chat, dl_url, `${title}.mp4`, `≡  *HJ YTDL*\n*📌 Título:* ${title}`, m, false, { mimetype: 'video/mp4' });
+        m.react('✅');
     }
 }
 
-// Comando para descargar MP3
-if (command === 'hjmp3') {
-    if (!text) throw `✳️ Ejemplo: *${usedPrefix}hjmp3 https://youtu.be/xxxxx*`;
-
-    let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp3?url=${text}&quality=128`);
-    let data = await res.json();
-    
-    let { title, dl_url } = data;
-    conn.sendFile(m.chat, dl_url, `${title}.mp3`, `≡  *HJ YTDL*\n\n▢ *📌 Título* : ${title}`, m, false, { mimetype: 'audio/mpeg' });
-    m.react('✅');
-}
-
-// Comando para descargar MP4
-if (command === 'hjmp4') {
-    if (!text) throw `✳️ Ejemplo: *${usedPrefix}hjmp4 https://youtu.be/xxxxx*`;
-
-    let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp4?url=${text}&quality=480`);
-    let data = await res.json();
-    
-    let { title, dl_url } = data;
-    conn.sendFile(m.chat, dl_url, `${title}.mp4`, `≡  *HJ YTDL*\n*📌 Título:* ${title}`, m, false, { mimetype: 'video/mp4' });
-    m.react('✅');
-}
-
+// Asegurarse de que los comandos sean reconocidos
 handler.help = ['play', 'hjmp3', 'hjmp4'];
 handler.tags = ['dl'];
-handler.command = ['play', 'playvid', 'hjmp3', 'hjmp4'];
+handler.command = ['play', 'playvid', 'hjmp3', 'hjmp4'];  // Aquí definimos todos los comandos que serán utilizados
 
+handler.disabled = false;
 
 export default handler;
 
