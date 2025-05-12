@@ -51,7 +51,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
 handler.help = ['play'];
 handler.tags = ['dl'];
 handler.command = ['play', 'playvid'];
-
+handler.disabled = false;
 
 export default handler;
 
