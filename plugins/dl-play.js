@@ -1,4 +1,3 @@
-
 import yts from 'yt-search';
 import fetch from 'node-fetch';
 
@@ -65,6 +64,9 @@ handler.before = async m => {
         clearTimeout(timeout);
         delete confirmation[m.sender];
 
+        // Mostrar mensaje de "Descargando..."
+        await conn.sendMessage(m.chat, '📥 *Descargando MP3...* Por favor, espera...', 'conversation');
+
         // Solicitar MP3 desde la nueva API
         let res = await fetch(`https://api.fgmods.xyz/api/downloader/ytmp3?url=${url}&apikey=fg_M6khGFXR`);
         let data = await res.json();
@@ -86,6 +88,9 @@ handler.before = async m => {
     } else if (m.text.trim() === '2') {
         clearTimeout(timeout);
         delete confirmation[m.sender];
+
+        // Mostrar mensaje de "Descargando..."
+        await conn.sendMessage(m.chat, '📥 *Descargando MP4...* Por favor, espera...', 'conversation');
 
         // Solicitar MP4 desde la nueva API
         let res = await fetch(`https://api.fgmods.xyz/api/downloader/ytmp4?url=${url}&apikey=fg_M6khGFXR`);
