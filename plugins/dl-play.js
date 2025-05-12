@@ -19,7 +19,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
     m.react('🎧'); 
 
     let playMessage = `
-≡ *HJ MUSIC*
+≡ *MUSIC*
 ┌──────────────
 ☆ 📌 *Título:* ${vid.title}
 ☆ 📆 *Fecha:* ${vid.ago}
@@ -74,7 +74,7 @@ if (command === 'hjmp4') {
 handler.help = ['play', 'hjmp3', 'hjmp4'];
 handler.tags = ['dl'];
 handler.command = ['play', 'playvid', 'hjmp3', 'hjmp4'];
-handler.disabled = false;
+
 
 export default handler;
 
