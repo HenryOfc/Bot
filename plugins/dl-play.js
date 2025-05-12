@@ -42,8 +42,8 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
         };
     } else {
         conn.sendButton(m.chat, playMessage, thumbnail, [
-            ['🎶 MP3', `${usedPrefix}fgmp3 ${url}`],
-            ['🎥 MP4', `${usedPrefix}fgmp4 ${url}`]
+            ['🎶 MP3', `${usedPrefix}hjmp3 ${url}`],
+            ['🎥 MP4', `${usedPrefix}hjmp4 ${url}`]
         ], m);
     }
 }
@@ -51,7 +51,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
 handler.help = ['play'];
 handler.tags = ['dl'];
 handler.command = ['play', 'playvid'];
-handler.disabled = false;
+
 
 export default handler;
 
