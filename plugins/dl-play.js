@@ -1,3 +1,4 @@
+
 import yts from 'yt-search';
 import fetch from 'node-fetch';
 
@@ -74,6 +75,11 @@ handler.before = async m => {
 
         let { title, dl_url, tamaño, tamañoB } = data.resultado;
 
+        // Verificar que la URL de descarga está disponible
+        if (!dl_url) {
+            throw `✳️ No se pudo obtener la URL de descarga del MP3. Intenta nuevamente.`;
+        }
+
         // Enviar el archivo MP3
         conn.sendFile(m.chat, dl_url, title + '.mp3', `≡  *HJ YTDL*\n\n▢ *📌 Título* : ${title}\n*⚖️ Tamaño* : ${tamaño}`, m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
         m.react('✅');
@@ -90,7 +96,13 @@ handler.before = async m => {
         }
 
         let { title, dl_url, tamaño, tamañoB } = data.resultado;
-        let isLimit = limit * 1024 * 1024 < tamañoB; // Comprobar si el archivo excede el límite en bytes
+
+        // Verificar que la URL de descarga está disponible
+        if (!dl_url) {
+            throw `✳️ No se pudo obtener la URL de descarga del MP4. Intenta nuevamente.`;
+        }
+
+        let isLimit = limit * 1024 * 1024 < tamañoB; // Verificar si el tamaño excede el límite
 
         // Mensaje de carga de descarga
         await conn.loadingMsg(m.chat, '📥 Descargando', ` ${isLimit ? `≡  *HJ YTDL*\n\n▢ *⚖️ Tamaño*: ${tamaño}\n\n▢ _Limite_ *+${limit} MB*` : '✅ Descarga Completada' }`, ["▬▭▭▭▭▭", "▬▬▭▭▭▭", "▬▬▬▭▭▭", "▬▬▬▬▭▭", "▬▬▬▬▬▭", "▬▬▬▬▬▬"], m);
