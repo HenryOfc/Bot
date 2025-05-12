@@ -64,7 +64,7 @@ handler.before = async m => {
         clearTimeout(timeout);
         delete confirmation[m.sender];
 
-        // Solicitar el MP3
+        // Solicitar MP3 desde la nueva API
         let res = await fetch(`https://api.fgmods.xyz/api/downloader/ytmp3?url=${url}&apikey=fg_M6khGFXR`);
         let data = await res.json();
 
@@ -81,7 +81,7 @@ handler.before = async m => {
         clearTimeout(timeout);
         delete confirmation[m.sender];
 
-        // Solicitar el MP4
+        // Solicitar MP4 desde la nueva API
         let res = await fetch(`https://api.fgmods.xyz/api/downloader/ytmp4?url=${url}&apikey=fg_M6khGFXR`);
         let data = await res.json();
 
