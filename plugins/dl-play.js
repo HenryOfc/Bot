@@ -80,7 +80,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
 }
 
 // Asegurarse de que los comandos sean reconocidos
-handler.help = ['play', 'hjmp3', 'hjmp4'];
+handler.help = ['play'];
 handler.tags = ['dl'];
 handler.command = ['play', 'playvid', 'hjmp3', 'hjmp4'];  // Aquí definimos todos los comandos que serán utilizados
 
