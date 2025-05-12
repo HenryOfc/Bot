@@ -7,8 +7,8 @@ let handler = async (m, { conn, text, args, usedPrefix, command }) => {
   m.react(rwait);
 
   try {
-    // Realizamos la llamada a la API
-    let res = await fetch(global.API('fgmods', '/api/downloader/tiktok', { url: args[0] }, 'apikey'));
+    // Realizamos la llamada a la nueva API con la clave de API
+    let res = await fetch(`https://api.fgmods.xyz/api/downloader/tiktok?url=${args[0]}&apikey=fg_M6khGFXR`);
     let data = await res.json();
 
     // Verificamos si la respuesta es válida
