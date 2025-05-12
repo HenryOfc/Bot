@@ -1,4 +1,3 @@
-
 import yts from 'yt-search';
 import fetch from 'node-fetch';
 let limit = 320;
@@ -51,7 +50,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
         // Comando para descargar MP3
         if (!text) throw `✳️ Ejemplo: *${usedPrefix}hjmp3 https://youtu.be/xxxxx*`;
 
-        let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp3?url=${text}&quality=128`);
+        let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp3?url=${text}&quality=128&apikey=fg_M6khGFXR`);
         let data = await res.json();
 
         let { title, dl_url } = data;
@@ -61,7 +60,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
         // Comando para descargar MP4
         if (!text) throw `✳️ Ejemplo: *${usedPrefix}hjmp4 https://youtu.be/xxxxx*`;
 
-        let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp4?url=${text}&quality=480`);
+        let res = await fetch(`https://ytdl.sylphy.xyz/dl/mp4?url=${text}&quality=480&apikey=fg_M6khGFXR`);
         let data = await res.json();
 
         let { title, dl_url } = data;
