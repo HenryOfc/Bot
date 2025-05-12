@@ -1,7 +1,7 @@
 import yts from 'yt-search';
 import fetch from 'node-fetch';
 
-let limit = 320;
+let limit = 320;  // Límite de tamaño en MB
 let confirmation = {};
 
 let handler = async (m, { conn, command, text, args, usedPrefix }) => {
@@ -68,14 +68,14 @@ handler.before = async m => {
         let res = await fetch(`https://api.fgmods.xyz/api/downloader/ytmp3?url=${url}&apikey=fg_M6khGFXR`);
         let data = await res.json();
 
-        if (data.status !== 'success') {
+        if (data.estado !== true) {
             throw `✳️ Hubo un problema al obtener el archivo MP3. Intenta nuevamente.`;
         }
 
-        let { title, dl_url, size, sizeB } = data.result;
+        let { title, dl_url, tamaño, tamañoB } = data.resultado;
 
         // Enviar el archivo MP3
-        conn.sendFile(m.chat, dl_url, title + '.mp3', `≡  *HJ YTDL*\n\n▢ *📌 Título* : ${title}\n*⚖️ Tamaño* : ${size}`, m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
+        conn.sendFile(m.chat, dl_url, title + '.mp3', `≡  *HJ YTDL*\n\n▢ *📌 Título* : ${title}\n*⚖️ Tamaño* : ${tamaño}`, m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
         m.react('✅');
     } else if (m.text.trim() === '2') {
         clearTimeout(timeout);
@@ -85,19 +85,19 @@ handler.before = async m => {
         let res = await fetch(`https://api.fgmods.xyz/api/downloader/ytmp4?url=${url}&apikey=fg_M6khGFXR`);
         let data = await res.json();
 
-        if (data.status !== 'success') {
+        if (data.estado !== true) {
             throw `✳️ Hubo un problema al obtener el archivo MP4. Intenta nuevamente.`;
         }
 
-        let { title, dl_url, size, sizeB } = data.result;
-        let isLimit = limit * 1024 < sizeB;
+        let { title, dl_url, tamaño, tamañoB } = data.resultado;
+        let isLimit = limit * 1024 * 1024 < tamañoB; // Comprobar si el archivo excede el límite en bytes
 
         // Mensaje de carga de descarga
-        await conn.loadingMsg(m.chat, '📥 Descargando', ` ${isLimit ? `≡  *HJ YTDL*\n\n▢ *⚖️ Tamaño*: ${size}\n\n▢ _Limite_ *+${limit} MB*` : '✅ Descarga Completada' }`, ["▬▭▭▭▭▭", "▬▬▭▭▭▭", "▬▬▬▭▭▭", "▬▬▬▬▭▭", "▬▬▬▬▬▭", "▬▬▬▬▬▬"], m);
+        await conn.loadingMsg(m.chat, '📥 Descargando', ` ${isLimit ? `≡  *HJ YTDL*\n\n▢ *⚖️ Tamaño*: ${tamaño}\n\n▢ _Limite_ *+${limit} MB*` : '✅ Descarga Completada' }`, ["▬▭▭▭▭▭", "▬▬▭▭▭▭", "▬▬▬▭▭▭", "▬▬▬▬▭▭", "▬▬▬▬▬▭", "▬▬▬▬▬▬"], m);
 
         // Enviar el archivo MP4 si no excede el límite
         if (!isLimit) {
-            conn.sendFile(m.chat, dl_url, title + '.mp4', `≡  *HJ YTDL*\n*📌 Título:* ${title}\n*⚖️ Peso* ${size}`, m, false, { asDocument: chat.useDocument });
+            conn.sendFile(m.chat, dl_url, title + '.mp4', `≡  *HJ YTDL*\n*📌 Título:* ${title}\n*⚖️ Peso* ${tamaño}`, m, false, { asDocument: chat.useDocument });
         }
 
         m.react('✅');
