@@ -44,17 +44,17 @@ let handler = async function (m, { conn, text, usedPrefix }) {
     const phone = user.phone;
 
     const addressMessage = `
-      *Dirección Generada:*
-      *Calle:* ${street} ${streetNumber}
-      *Ciudad:* ${city}
-      *Estado:* ${state}
-      *País:* ${countryName}
+     *🌍 Dirección Generada:*
+     *❇️ Calle:* ${street} ${streetNumber}
+     *❇️ Ciudad:* ${city}
+     *❇️ Estado:* ${state}
+     *❇️ País:* ${countryName}
     `;
 
     conn.reply(m.chat, addressMessage, m);
   } catch (error) {
     console.error(error);
-    conn.reply(m.chat, 'Hubo un error al generar la dirección. Intenta nuevamente.', m);
+    conn.reply(m.chat, '🧨 Hubo un error al generar la dirección. Intenta nuevamente.', m);
   }
 };
 
