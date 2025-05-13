@@ -1,4 +1,4 @@
-import fetch from 'node-fetch'; // Importamos node-fetch
+import fetch from 'node-fetch'; // Asegúrate de tener node-fetch instalado
 
 let handler = async function (m, { conn, text, usedPrefix }) {
   if (!text) {
@@ -32,15 +32,25 @@ let handler = async function (m, { conn, text, usedPrefix }) {
 
     const user = data.results[0];
     const fullName = `${user.name.first} ${user.name.last}`;
-    const address = `${user.location.street.name} ${user.location.street.number}, ${user.location.city}, ${user.location.state}, ${user.location.country}`;
+
+    // Extraemos la dirección detallada
+    const street = user.location.street.name;
+    const streetNumber = user.location.street.number;
+    const city = user.location.city;
+    const state = user.location.state;
+    const countryName = user.location.country;
+
+    const address = `${street} ${streetNumber}, ${city}, ${state}, ${countryName}`;
     const phone = user.phone;
 
     const addressMessage = `
       *Dirección Generada:*
-      *Nombre:* ${fullName}
-      *Dirección:* ${address}
-      *Teléfono:* ${phone}
+      *Calle:* ${street} ${streetNumber}
+      *Ciudad:* ${city}
+      *Estado:* ${state}
+      *País:* ${countryName}
     `;
+
     conn.reply(m.chat, addressMessage, m);
   } catch (error) {
     console.error(error);
