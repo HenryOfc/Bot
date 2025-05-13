@@ -3,7 +3,7 @@ import fetch from 'node-fetch'; // Asegúrate de tener node-fetch instalado
 let handler = async function (m, { conn, text, usedPrefix }) {
   // Si no se proporciona el país, avisamos al usuario
   if (!text) {
-    return conn.reply(m.chat, 'Por favor, ingresa un país (ejemplo: /rnd mx).', m);
+    return conn.reply(m.chat, '🔰 Por favor, ingresa un país (ejemplo: /rnd mx).', m);
   }
 
   const countryMap = {
@@ -20,7 +20,7 @@ let handler = async function (m, { conn, text, usedPrefix }) {
 
   const country = text.trim().toLowerCase();
   if (!countryMap[country]) {
-    return conn.reply(m.chat, 'País no válido. Usa uno de los siguientes códigos: us, mx, ca, br, es, de, it, fr, au.', m);
+    return conn.reply(m.chat, '⚠️ País no válido. Usa uno de los siguientes códigos: us, mx, ca, br, es, de, it, fr, au.', m);
   }
 
   // Reacción de carga ✅
@@ -46,13 +46,12 @@ let handler = async function (m, { conn, text, usedPrefix }) {
 
     // Formateamos el mensaje de dirección
     const addressMessage = `
-      *Dirección Generada:*
-      *Nombre:* ${fullName}
-      *Calle:* ${street} ${streetNumber}
-      *Ciudad:* ${city}
-      *Estado:* ${state}
-      *País:* ${countryName}
-      *Teléfono:* ${phone}
+   *🌍 Dirección Generada:*
+   *❇️ Calle:* ${street} ${streetNumber}
+   *❇️ Ciudad:* ${city}
+   *❇️ Estado:* ${state}
+   *❇️ País:* ${countryName} 
+   *❇️ Teléfono:* ${phone}
     `;
 
     // Enviar el mensaje con el botón
@@ -65,10 +64,12 @@ let handler = async function (m, { conn, text, usedPrefix }) {
 
   } catch (error) {
     console.error(error);
-    conn.reply(m.chat, 'Hubo un error al generar la dirección. Intenta nuevamente.', m);
+    conn.reply(m.chat, '❗️ Hubo un error al generar la dirección. Intenta nuevamente.', m);
   }
 };
 
 handler.command = /^(rnd)$/i;
-
+handler.tags = ['bin'];
+handler.help = ['rnd'];
 export default handler;
+
