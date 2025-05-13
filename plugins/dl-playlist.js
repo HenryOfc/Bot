@@ -33,7 +33,7 @@ let handler = async (m, { conn, usedPrefix, text, args, command }) => {
     await conn.sendList(m.chat, '  ≡ *HJ MUSIC*🔎', `\n 📀 Resultados de:\n *${text}*`, `Click Aqui`, ytres[0].image, listSections, m);
 };
 
-handler.help = ['play2']
+handler.help = ['playlist']
 handler.tags = ['dl']
 handler.command = ['play2', 'playvid2', 'playlist', 'playlista'] 
 handler.disabled = false
