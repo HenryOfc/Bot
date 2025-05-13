@@ -35,24 +35,7 @@ let handler = async (m, { conn, __dirname, args }) => {
   })
 
   // -- eliminar sesiones de bots ---
-  const bbtSessions = "./bebots"
-  readdirSync(bbtSessions, { withFileTypes: true }).forEach((file) => {
-    const filePath = `${bbtSessions}/${file.name}`
-    if (file.isDirectory()) {
-      readdirSync(filePath, { withFileTypes: true }).forEach((subFile) => {
-        const subFilePath = `${filePath}/${subFile.name}`
-        if (subFile.isFile() && subFile.name !== "creds.json") {
-          unlinkSync(subFilePath)
-        }
-      })
-      // -- verificar si la carpeta está vacía ---
-      if (readdirSync(filePath).length === 0) {
-        rmSync(filePath, { recursive: true, force: true })
-      }
-    } else if (file.isFile() && file.name !== "creds.json") {
-      unlinkSync(filePath)
-    }
-  })
+  
 }
 handler.help = ['cleartmp']
 handler.tags = ['owner']
