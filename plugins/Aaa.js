@@ -1,6 +1,7 @@
 import fetch from 'node-fetch'; // Asegúrate de tener node-fetch instalado
 
 let handler = async function (m, { conn, text, usedPrefix }) {
+  // Si no se proporciona el país, avisamos al usuario
   if (!text) {
     return conn.reply(m.chat, 'Por favor, ingresa un país (ejemplo: /rnd mx).', m);
   }
@@ -43,18 +44,31 @@ let handler = async function (m, { conn, text, usedPrefix }) {
     const address = `${street} ${streetNumber}, ${city}, ${state}, ${countryName}`;
     const phone = user.phone;
 
+    // Formateamos el mensaje de dirección
     const addressMessage = `
-     *🌍 Dirección Generada:*
-     *❇️ Calle:* ${street} ${streetNumber}
-     *❇️ Ciudad:* ${city}
-     *❇️ Estado:* ${state}
-     *❇️ País:* ${countryName}
+      *Dirección Generada:*
+      *Nombre:* ${fullName}
+      *Calle:* ${street} ${streetNumber}
+      *Ciudad:* ${city}
+      *Estado:* ${state}
+      *País:* ${countryName}
+      *Teléfono:* ${phone}
     `;
 
+    // Enviar el mensaje con el botón
+    const playMessage = 'Haz clic para generar una nueva dirección con el mismo país';
+
+    // Enviar el botón sin thumbnail
+    conn.sendButton(m.chat, playMessage, [
+      ['🔄 RND 🔄', `${usedPrefix}rnd ${country}`], // Aquí pasamos el país para que se mantenga la selección
+    ], m);
+
+    // Enviar la dirección generada
     conn.reply(m.chat, addressMessage, m);
+
   } catch (error) {
     console.error(error);
-    conn.reply(m.chat, '🧨 Hubo un error al generar la dirección. Intenta nuevamente.', m);
+    conn.reply(m.chat, 'Hubo un error al generar la dirección. Intenta nuevamente.', m);
   }
 };
 
