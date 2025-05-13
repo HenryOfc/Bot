@@ -23,8 +23,8 @@ let handler = async function (m, { conn, text, usedPrefix }) {
     return conn.reply(m.chat, 'País no válido. Usa uno de los siguientes códigos: us, mx, ca, br, es, de, it, fr, au.', m);
   }
 
-  const loadingMessage = 'Generando dirección...';
-  conn.reply(m.chat, loadingMessage, m);
+  // Reacción de carga ✅
+  await m.react('✅');
 
   try {
     // Realizamos la solicitud HTTP para obtener una dirección aleatoria del país seleccionado
