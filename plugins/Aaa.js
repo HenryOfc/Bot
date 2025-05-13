@@ -58,13 +58,10 @@ let handler = async function (m, { conn, text, usedPrefix }) {
     // Enviar el mensaje con el botón
     const playMessage = 'Haz clic para generar una nueva dirección con el mismo país';
 
-    // Enviar el botón sin thumbnail
-    conn.sendButton(m.chat, playMessage, [
+    // Aquí creamos el botón de acción
+    conn.sendButton(m.chat, addressMessage, playMessage, [
       ['🔄 RND 🔄', `${usedPrefix}rnd ${country}`], // Aquí pasamos el país para que se mantenga la selección
     ], m);
-
-    // Enviar la dirección generada
-    conn.reply(m.chat, addressMessage, m);
 
   } catch (error) {
     console.error(error);
