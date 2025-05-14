@@ -1,5 +1,4 @@
 import fetch from 'node-fetch';
-import fs from 'fs';
 
 // Manejador de comandos
 const handler = async (m, { conn, command, text, isAdmin }) => {
@@ -23,24 +22,8 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
     // Actualizar la base de datos para marcar al usuario como muteado
     userDb.muto = true;
 
-    // Enviar un mensaje notificando el mute
-    const muteMsg = {
-      key: { participant: '0@s.whatsapp.net', fromMe: false, id: '3gDMuTc' },
-      message: {
-        locationMessage: {
-          name: 'Usuario Mutado',
-          jpegThumbnail: await (await fetch('https://telegra.ph/file/f8324d9798fa2ed2317bc.png')).buffer()
-        }
-      },
-      participant: '0@s.whatsapp.net'
-    };
-
-    conn.sendMessage(m.chat, 'El usuario ha sido mutado.', { mentions: [mentionedUser], ...muteMsg });
-
-    // Eliminar mensajes del usuario muteado
-    conn.sendMessage(m.chat, { text: `El usuario *@${mentionedUser.split('@')[0]}* ha sido mutado y sus mensajes serán eliminados.`, mentions: [mentionedUser] });
-
-    return;
+    // Confirmar el mute
+    return conn.reply(m.chat, 'El usuario ha sido mutado y sus mensajes serán eliminados.', m);
   }
 
   // Comando para desmutear (unmute)
@@ -63,28 +46,27 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
     // Actualizar la base de datos para marcar al usuario como desmuteado
     userDb.muto = false;
 
-    // Enviar un mensaje notificando el desmute
-    const unmuteMsg = {
-      key: { participant: '0@s.whatsapp.net', fromMe: false, id: '3gDMuTc' },
-      message: {
-        locationMessage: {
-          name: 'Usuario Desmutado',
-          jpegThumbnail: await (await fetch('https://telegra.ph/file/aea704d0b242b8c41bf15.png')).buffer()
-        }
-      },
-      participant: '0@s.whatsapp.net'
-    };
-
-    conn.sendMessage(m.chat, 'El usuario ha sido desmutado.', { mentions: [mentionedUser], ...unmuteMsg });
-
-    // Confirmación de que el usuario ya no será muteado
-    conn.sendMessage(m.chat, { text: `El usuario *@${mentionedUser.split('@')[0]}* ha sido desmutado y sus mensajes ya no serán eliminados.`, mentions: [mentionedUser] });
-
-    return;
+    // Confirmar el desmute
+    return conn.reply(m.chat, 'El usuario ha sido desmutado y sus mensajes ya no serán eliminados.', m);
   }
 };
 
-// Configuración de los comandos
+// Función para eliminar mensajes de usuarios muteados
+const deleteMuteMessages = async (m, { conn }) => {
+  // Verificar si el usuario está muteado
+  let userDb = global.db.data.users[m.sender];
+  if (userDb.muto) {
+    // Eliminar el mensaje
+    return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, id: m.key.id, participant: m.sender } });
+  }
+};
+
+// Escuchar los mensajes entrantes
+handler.all = async (m, { conn }) => {
+  // Eliminar los mensajes si el usuario está muteado
+  await deleteMuteMessages(m, { conn });
+};
+
 handler.help = ['mute', 'unmute'];
 handler.tags = ['group'];
 handler.command = /^(mute|unmute)$/i;
