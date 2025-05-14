@@ -1,15 +1,11 @@
 import axios from 'axios';
 
+// Lista de proxies vivas proporcionadas por ti
 const proxies = [
-  'http://115.79.219.218:8181',
-  'http://117.2.30.59:8181',
-  'http://27.72.46.242:8181',
-  'http://115.75.26.130:8181',
-  'http://113.186.98.155:8181',
-  'http://117.2.144.30:8181',
-  'http://103.166.182.97:8080',
-  'http://117.2.144.50:8181',
-  'http://27.72.162.118:8181',
+  'http://180.178.37.114:80',
+  'http://47.90.167.27:8081',
+  'http://71.14.218.2:8080',
+  'http://47.91.110.148:80',
 ];
 
 // Función para hacer la solicitud con proxy
@@ -24,7 +20,7 @@ const makeRequestWithProxy = async (url, headers, data, proxy) => {
     });
     return response.data;
   } catch (error) {
-    // Imprimir más información para depurar
+    // Si una proxy falla, la logueamos pero continuamos con la siguiente
     console.error(`Error con proxy ${proxy}:`, error.message);
     if (error.response) {
       console.error("Response error data:", error.response.data);
