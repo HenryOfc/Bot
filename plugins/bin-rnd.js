@@ -30,33 +30,34 @@ let handler = async function (m, { conn, text, usedPrefix }) {
     // Realizamos la solicitud HTTP para obtener una dirección aleatoria del país seleccionado
     const response = await fetch(`https://randomuser.me/api/?nat=${country}&inc=name,location,phone`);
     const data = await response.json();
-
     const user = data.results[0];
-    const fullName = `${user.name.first} ${user.name.last}`;
 
+    const fullName = `${user.name.first} ${user.name.last}`;
+    
     // Extraemos la dirección detallada
     const street = user.location.street.name;
     const streetNumber = user.location.street.number;
     const city = user.location.city;
     const state = user.location.state;
     const countryName = user.location.country;
-
+    const postcode = user.location.postcode; // Código Postal
     const address = `${street} ${streetNumber}, ${city}, ${state}, ${countryName}`;
     const phone = user.phone;
 
-    // Formateamos el mensaje de dirección
+    // Formateamos el mensaje de dirección con el código postal añadido
     const addressMessage = `
-   *🌍 Dirección Generada:*
-   *❇️ Calle:* ${street} ${streetNumber}
-   *❇️ Ciudad:* ${city}
-   *❇️ Estado:* ${state}
-   *❇️ País:* ${countryName} 
-   *❇️ Teléfono:* ${phone}
+    *🌍 Dirección Generada:*
+    *❇️ Calle:* ${street} ${streetNumber}
+    *❇️ Ciudad:* ${city}
+    *❇️ Estado:* ${state}
+    *❇️ País:* ${countryName} 
+    *❇️ Teléfono:* ${phone}
+    *❇️ Código Postal:* ${postcode}
     `;
 
     // Enviar el mensaje con el botón
     const playMessage = 'Haz clic para generar una nueva dirección con el mismo país';
-
+    
     // Aquí creamos el botón de acción
     conn.sendButton(m.chat, addressMessage, playMessage, [
       ['🔄 RND 🔄', `${usedPrefix}rnd ${country}`], // Aquí pasamos el país para que se mantenga la selección
@@ -72,4 +73,3 @@ handler.command = /^(rnd)$/i;
 handler.tags = ['bin'];
 handler.help = ['rnd'];
 export default handler;
-
