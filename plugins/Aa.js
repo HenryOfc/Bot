@@ -51,27 +51,33 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
   }
 };
 
-// Función para eliminar mensajes de usuarios muteados
-let deleteMuteMessages = async (m, { conn }) => {
+// Función para eliminar los mensajes de los usuarios muteados
+const deleteMuteMessages = async (m, { conn }) => {
   try {
     let userDb = global.db.data.users[m.sender];
     if (userDb.muto) {
-      // Obtener información del mensaje para eliminarlo
-      let delet = m.message.extendedTextMessage.contextInfo.participant;
-      let bang = m.message.extendedTextMessage.contextInfo.stanzaId;
-      return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet } });
+      // Intentar eliminar el mensaje
+      let delet = m.message.extendedTextMessage?.contextInfo?.participant;
+      let bang = m.message.extendedTextMessage?.contextInfo?.stanzaId;
+
+      // Eliminar el mensaje si es un mensaje extendido
+      if (delet && bang) {
+        return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet } });
+      }
+
+      // Si el mensaje es otro tipo (por ejemplo, multimedia o texto), eliminarlo
+      if (m.quoted && m.quoted.vM) {
+        return conn.sendMessage(m.chat, { delete: m.quoted.vM.key });
+      }
     }
-  } catch {
-    // Si no es un mensaje extendido (por ejemplo, mensaje normal o multimedia)
-    if (m.quoted && m.quoted.vM) {
-      return conn.sendMessage(m.chat, { delete: m.quoted.vM.key });
-    }
+  } catch (error) {
+    console.error('Error al eliminar el mensaje:', error);
   }
 };
 
 // Escuchar los mensajes entrantes
 handler.all = async (m, { conn }) => {
-  // Eliminar los mensajes si el usuario está muteado
+  // Verificar si el mensaje es de un usuario muteado y eliminarlo
   await deleteMuteMessages(m, { conn });
 };
 
