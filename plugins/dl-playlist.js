@@ -1,11 +1,19 @@
 import yts from 'yt-search';
 
 let handler = async (m, { conn, usedPrefix, text, args, command }) => {
-    if (!text) throw `✳️ ${mssg.example} *${usedPrefix + command}* Lil Peep hate my life`;
+    if (!text) throw `✳️ Ejemplo: *${usedPrefix + command}* Lil Peep hate my life`;
     m.react('📀');
 
     let result = await yts(text);
     let ytres = result.videos;
+
+    // Definir el objeto 'mssg' de manera simple para evitar el error
+    const mssg = {
+        duration: "Duración",  // Cambiar según lo que necesites
+        views: "Vistas",       // Cambiar según lo que necesites
+        title: "Título",       // Cambiar según lo que necesites
+        aploud: "Subido",      // Cambiar según lo que necesites
+    };
 
     let listSections = [];
     for (let index in ytres) {
@@ -21,7 +29,7 @@ let handler = async (m, { conn, usedPrefix, text, args, command }) => {
                 },
                 {
                     header: "🎥 MP4",
-                    title: "" ,
+                    title: "",
                     description: `▢ ⌚ *${mssg.duration}:* ${v.timestamp}\n▢ 👀 *${mssg.views}:* ${v.views}\n▢ 📌 *${mssg.title}* : ${v.title}\n▢ 📆 *${mssg.aploud}:* ${v.ago}\n`, 
                     id: `${usedPrefix}hjmp4 ${v.url}`
                 }
@@ -58,9 +66,9 @@ else if (command === "hjmp4" || command === "playvid") {
     }
 }
 
-handler.help = ['playlist]
+handler.help = ['play2']
 handler.tags = ['dl']
-handler.command = ['hjmp3', 'hjmp4', 'playlist', 'playlista'] 
+handler.command = ['play2', 'playvid2', 'playlist', 'playlista'] 
 handler.disabled = false
 
 export default handler;
