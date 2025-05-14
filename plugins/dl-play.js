@@ -1,91 +1,47 @@
-import yts from 'yt-search';
 import fetch from 'node-fetch';
-
 let limit = 320;
-let confirmation = {};
+let handler = async (m, { conn, args, isPrems, isOwner, usedPrefix, command }) => {
+  if (!args || !args[0]) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`;
+  if (!args[0].match(/youtu/gi)) throw `❎ ${mssg.noLink('YouTube')}`;
+  
+  let chat = global.db.data.chats[m.chat];
+  m.react(rwait);
 
-let handler = async (m, { conn, command, text, args, usedPrefix }) => {
-  if (!text) throw `✳️ ${mssg.example} *${usedPrefix + command}* Lil Peep hate my life`;
-
-  // Buscar videos en YouTube
-  let res = await yts(text);
-  let ytres = res.videos;
-
-  if (!ytres.length) throw `✳️ No se encontraron resultados para: *${text}*`;
-
-  let listSections = [];
-  for (let index in ytres) {
-    let v = ytres[index];
-    listSections.push({
-      title: `${index}┃ ${v.title}`,
-      rows: [
-        {
-          header: '🎶 MP3',
-          title: "",
-          description: `▢ ⌚ *${mssg.duration}:* ${v.timestamp}\n▢ 👀 *${mssg.views}:* ${v.views}\n▢ 📌 *${mssg.title}* : ${v.title}\n▢ 📆 *${mssg.aploud}:* ${v.ago}\n`,
-          id: `${usedPrefix}fgmp3 ${v.url}`
-        },
-        {
-          header: "🎥 MP4",
-          title: "",
-          description: `▢ ⌚ *${mssg.duration}:* ${v.timestamp}\n▢ 👀 *${mssg.views}:* ${v.views}\n▢ 📌 *${mssg.title}* : ${v.title}\n▢ 📆 *${mssg.aploud}:* ${v.ago}\n`,
-          id: `${usedPrefix}fgmp4 ${v.url}`
-        }
-      ]
-    });
-  }
-
-  // Si es comando play
-  if (command === 'play') {
-    await conn.sendList(m.chat, '≡ *FG MUSIC*🔎', `\n📀 Resultados de:\n *${text}*`, `Click Aquí`, ytres[0].image, listSections, m);
-  }
-
-  // Si es comando playlist
-  if (command === 'playlist') {
-    await conn.sendList(m.chat, '≡ *FG MUSIC Playlist*🔎', `\n📀 Playlist de:\n *${text}*`, `Click Aquí`, ytres[0].image, listSections, m);
-  }
-
-  // Comando para descargar MP3 (fgmp3)
-  if (command === 'fgmp3') {
-    let videoUrl = args[0];
-    if (!videoUrl) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`;
-
-    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp3', { url: videoUrl }, 'apikey'));
+  try {
+    // Llamada a la API para obtener el MP3 o MP4
+    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp3', { url: args[0] }, 'apikey'));
     let data = await res.json();
 
-    let { title, dl_url, thumb, size, sizeB, duration } = data.result;
-    let chat = global.db.data.chats[m.chat];
-    conn.sendFile(m.chat, dl_url, title + '.mp3', `
-    ≡  *FG YTDL*
-    ▢ *📌${mssg.title}* : ${title}
-    `.trim(), m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
-    m.react('✅');
-  }
-
-  // Comando para descargar MP4 (fgmp4)
-  if (command === 'fgmp4') {
-    let videoUrl = args[0];
-    if (!videoUrl) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`;
-
-    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp4', { url: videoUrl }, 'apikey'));
-    let data = await res.json();
-
-    let { title, dl_url, thumb, size, sizeB, duration } = data.result;
-    let isLimit = limit * 1024 < sizeB;
-
-    await conn.loadingMsg(m.chat, '📥 Descargando', ` ${isLimit ? `≡  *FG YTDL*\n\n▢ *⚖️${mssg.size}*: ${size}\n\n▢ _${mssg.limitdl}_ *+${limit} MB*` : '✅ Descarga Completada' }`, ["▬▭▭▭▭▭", "▬▬▭▭▭▭", "▬▬▬▭▭▭", "▬▬▬▬▭▭", "▬▬▬▬▬▭", "▬▬▬▬▬▬"], m);
-
-    if (!isLimit) {
-      let chat = global.db.data.chats[m.chat];
-      conn.sendFile(m.chat, dl_url, title + '.mp4', `≡  *FG YTDL*\n*📌${mssg.title}:* ${title}\n*⚖️${mssg.size}:* ${size}`, m, false, { asDocument: chat.useDocument });
-      m.react('✅');
+    // Verificar si la respuesta contiene 'result'
+    if (!data || !data.result) {
+      throw `❎ No se pudo obtener información del video. Intenta nuevamente.`;
     }
-  }
-}
 
-handler.help = ['play', 'playlist', 'fgmp3', 'fgmp4'];
+    // Desestructurar la respuesta solo si 'result' está presente
+    let { title, dl_url, thumb, size, sizeB, duration } = data.result;
+
+    // Verificación adicional: Si no se encuentra 'title' o 'dl_url'
+    if (!title || !dl_url) {
+      throw `❎ No se pudo obtener el título o el enlace de descarga.`;
+    }
+
+    // Enviar el archivo MP3 al chat
+    conn.sendFile(m.chat, dl_url, title + '.mp3', `
+      ≡  *FG YTDL*
+      ▢ *📌${mssg.title}* : ${title}
+    `.trim(), m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
+
+    m.react(done);
+
+  } catch (error) {
+    console.error(error);
+    await m.reply(`❎ ${mssg.error || 'Ocurrió un error al procesar tu solicitud.'}`);
+  }
+};
+
+handler.help = ['ytmp3 <link yt>'];
 handler.tags = ['dl'];
-handler.command = ['play', 'playlist', 'fgmp3', 'fgmp4'];
-handler.disabled = false;
+handler.command = ['ytmp3', 'fgmp3'];
+handler.diamond = false;
 
 export default handler;
