@@ -35,34 +35,39 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
     });
   }
 
-  await conn.sendList(m.chat, '≡ *FG MUSIC*🔎', `\n📀 Resultados de:\n *${text}*`, `Click Aquí`, ytres[0].image, listSections, m);
-};
+  // Si es comando play
+  if (command === 'play') {
+    await conn.sendList(m.chat, '≡ *FG MUSIC*🔎', `\n📀 Resultados de:\n *${text}*`, `Click Aquí`, ytres[0].image, listSections, m);
+  }
 
-// Comando para descargar MP3
-handler.command = ['ytmp3', 'fgmp3'];
-handler.help = ['ytmp3 <url>'];
-handler.tags = ['dl'];
+  // Si es comando playlist
+  if (command === 'playlist') {
+    await conn.sendList(m.chat, '≡ *FG MUSIC Playlist*🔎', `\n📀 Playlist de:\n *${text}*`, `Click Aquí`, ytres[0].image, listSections, m);
+  }
 
-handler.before = async m => {
-  if (m.isBaileys) return; // Ignorar mensajes del bot
-  if (!(m.sender in confirmation)) return; // Solo continuar si hay confirmación pendiente
+  // Comando para descargar MP3 (fgmp3)
+  if (command === 'fgmp3') {
+    let videoUrl = args[0];
+    if (!videoUrl) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`;
 
-  let { sender, timeout, url, chat } = confirmation[m.sender]; // Desestructuración que incluye la url y chat
-  if (m.text.trim() === '1') {
-    clearTimeout(timeout);
-    delete confirmation[m.sender];
-
-    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp3', { url: url }, 'apikey'));
+    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp3', { url: videoUrl }, 'apikey'));
     let data = await res.json();
 
     let { title, dl_url, thumb, size, sizeB, duration } = data.result;
-    conn.sendFile(m.chat, dl_url, title + '.mp3', `≡  *FG YTDL*\n\n▢ *📌 ${mssg.title}* : ${title}`, m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
+    let chat = global.db.data.chats[m.chat];
+    conn.sendFile(m.chat, dl_url, title + '.mp3', `
+    ≡  *FG YTDL*
+    ▢ *📌${mssg.title}* : ${title}
+    `.trim(), m, false, { mimetype: 'audio/mpeg', asDocument: chat.useDocument });
     m.react('✅');
-  } else if (m.text.trim() === '2') {
-    clearTimeout(timeout);
-    delete confirmation[m.sender];
+  }
 
-    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp4', { url: url }, 'apikey'));
+  // Comando para descargar MP4 (fgmp4)
+  if (command === 'fgmp4') {
+    let videoUrl = args[0];
+    if (!videoUrl) throw `✳️ ${mssg.example} :\n${usedPrefix + command} https://youtu.be/YzkTFFwxtXI`;
+
+    let res = await fetch(global.API('fgmods', '/api/downloader/ytmp4', { url: videoUrl }, 'apikey'));
     let data = await res.json();
 
     let { title, dl_url, thumb, size, sizeB, duration } = data.result;
@@ -71,18 +76,16 @@ handler.before = async m => {
     await conn.loadingMsg(m.chat, '📥 Descargando', ` ${isLimit ? `≡  *FG YTDL*\n\n▢ *⚖️${mssg.size}*: ${size}\n\n▢ _${mssg.limitdl}_ *+${limit} MB*` : '✅ Descarga Completada' }`, ["▬▭▭▭▭▭", "▬▬▭▭▭▭", "▬▬▬▭▭▭", "▬▬▬▬▭▭", "▬▬▬▬▬▭", "▬▬▬▬▬▬"], m);
 
     if (!isLimit) {
+      let chat = global.db.data.chats[m.chat];
       conn.sendFile(m.chat, dl_url, title + '.mp4', `≡  *FG YTDL*\n*📌${mssg.title}:* ${title}\n*⚖️${mssg.size}:* ${size}`, m, false, { asDocument: chat.useDocument });
+      m.react('✅');
     }
-    m.react('✅');
   }
+}
 
-};
-
-// Comando para descargar MP4
-handler.command = ['ytmp4', 'fgmp4'];
-handler.help = ['ytmp4 <link yt>'];
+handler.help = ['play', 'playlist', 'fgmp3', 'fgmp4'];
 handler.tags = ['dl'];
-
-handler.diamond = false;
+handler.command = ['play', 'playlist', 'fgmp3', 'fgmp4'];
+handler.disabled = false;
 
 export default handler;
