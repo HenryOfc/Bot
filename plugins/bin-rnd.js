@@ -13,14 +13,14 @@ let handler = async function (m, { conn, text, usedPrefix }) {
     'br': 'Brasil',
     'es': 'España',
     'de': 'Alemania',
+    'ca': 'Canada',
     'fr': 'Francia',
     'au': 'Australia'
-    'ca': 'Canadá'
   };
 
   const country = text.trim().toLowerCase();
   if (!countryMap[country]) {
-    return conn.reply(m.chat, '⚠️ País no válido. Usa uno de los siguientes códigos: us, mx, ca, br, es, de,  fr, au, ca', m);
+    return conn.reply(m.chat, '⚠️ País no válido. Usa uno de los siguientes códigos: us, mx, ca, br, es, de, ca, fr, au.', m);
   }
 
   // Reacción de carga ✅
@@ -46,13 +46,13 @@ let handler = async function (m, { conn, text, usedPrefix }) {
 
     // Formateamos el mensaje de dirección con el código postal añadido
     const addressMessage = `
-         *🌍 Dirección Generada:*
+    *🌍 Dirección Generada:*
     *❇️ Calle:* ${street} ${streetNumber}
     *❇️ Ciudad:* ${city}
     *❇️ Estado:* ${state}
     *❇️ Teléfono:* ${phone}
     *❇️ Código Postal:* ${postcode}
-    *❇️ País:* ${countryName} 
+    *❇️ País:* ${countryName}      
     `;
 
     // Enviar el mensaje con el botón
