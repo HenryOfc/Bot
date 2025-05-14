@@ -10,16 +10,20 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
     let mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : text);
     let userDb = global.db.data.users[mentionedUser];
 
-    if (!mentionedUser) return conn.reply(m.chat, 'Menciona a quién deseas mutear.', m);
+    // Validación si no hay usuario mencionado o citado
+    if (!mentionedUser) {
+      return conn.reply(m.chat, 'Menciona a quién deseas mutear. Ejemplo: *!mute @usuario*', m);
+    }
 
-    // Si el usuario ya está muteado
+    // Verificar si el usuario ya está muteado
     if (userDb.muto) {
       return conn.reply(m.chat, 'Este usuario ya ha sido mutado.', m);
     }
 
-    // Establecer el estado de mute
+    // Actualizar la base de datos para marcar al usuario como muteado
     userDb.muto = true;
 
+    // Enviar un mensaje notificando el mute
     const muteMsg = {
       key: { participant: '0@s.whatsapp.net', fromMe: false, id: '3gDMuTc' },
       message: {
@@ -31,10 +35,12 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
       participant: '0@s.whatsapp.net'
     };
 
-    // Enviar mensaje de mute
     conn.sendMessage(m.chat, 'El usuario ha sido mutado.', { mentions: [mentionedUser], ...muteMsg });
 
-    return conn.reply(m.chat, 'El usuario ha sido mutado exitosamente.', m);
+    // Eliminar mensajes del usuario muteado
+    conn.sendMessage(m.chat, { text: `El usuario *@${mentionedUser.split('@')[0]}* ha sido mutado y sus mensajes serán eliminados.`, mentions: [mentionedUser] });
+
+    return;
   }
 
   // Comando para desmutear (unmute)
@@ -44,16 +50,20 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
     let mentionedUser = m.mentionedJid[0] || (m.quoted ? m.quoted.sender : text);
     let userDb = global.db.data.users[mentionedUser];
 
-    if (!mentionedUser) return conn.reply(m.chat, 'Menciona a quién deseas desmutear.', m);
+    // Validación si no hay usuario mencionado o citado
+    if (!mentionedUser) {
+      return conn.reply(m.chat, 'Menciona a quién deseas desmutear. Ejemplo: *!unmute @usuario*', m);
+    }
 
-    // Si el usuario no está muteado
+    // Verificar si el usuario está muteado
     if (!userDb.muto) {
       return conn.reply(m.chat, 'Este usuario no está muteado.', m);
     }
 
-    // Eliminar el estado de mute
+    // Actualizar la base de datos para marcar al usuario como desmuteado
     userDb.muto = false;
 
+    // Enviar un mensaje notificando el desmute
     const unmuteMsg = {
       key: { participant: '0@s.whatsapp.net', fromMe: false, id: '3gDMuTc' },
       message: {
@@ -65,10 +75,12 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
       participant: '0@s.whatsapp.net'
     };
 
-    // Enviar mensaje de desmute
     conn.sendMessage(m.chat, 'El usuario ha sido desmutado.', { mentions: [mentionedUser], ...unmuteMsg });
 
-    return conn.reply(m.chat, 'El usuario ha sido desmutado exitosamente.', m);
+    // Confirmación de que el usuario ya no será muteado
+    conn.sendMessage(m.chat, { text: `El usuario *@${mentionedUser.split('@')[0]}* ha sido desmutado y sus mensajes ya no serán eliminados.`, mentions: [mentionedUser] });
+
+    return;
   }
 };
 
