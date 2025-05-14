@@ -21,7 +21,7 @@ let handler = async (m, { conn, usedPrefix, command }) => {
 - *Registrados:* ${rtotalreg.length.toLocaleString()} 
 `
 
-    m.reply(message,m)
+    m.reply(message, null)
 }
 handler.help = ['info']
 handler.tags = ['main']
