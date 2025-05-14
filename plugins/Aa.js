@@ -52,12 +52,20 @@ const handler = async (m, { conn, command, text, isAdmin }) => {
 };
 
 // Función para eliminar mensajes de usuarios muteados
-const deleteMuteMessages = async (m, { conn }) => {
-  // Verificar si el usuario está muteado
-  let userDb = global.db.data.users[m.sender];
-  if (userDb.muto) {
-    // Eliminar el mensaje
-    return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, id: m.key.id, participant: m.sender } });
+let deleteMuteMessages = async (m, { conn }) => {
+  try {
+    let userDb = global.db.data.users[m.sender];
+    if (userDb.muto) {
+      // Obtener información del mensaje para eliminarlo
+      let delet = m.message.extendedTextMessage.contextInfo.participant;
+      let bang = m.message.extendedTextMessage.contextInfo.stanzaId;
+      return conn.sendMessage(m.chat, { delete: { remoteJid: m.chat, fromMe: false, id: bang, participant: delet } });
+    }
+  } catch {
+    // Si no es un mensaje extendido (por ejemplo, mensaje normal o multimedia)
+    if (m.quoted && m.quoted.vM) {
+      return conn.sendMessage(m.chat, { delete: m.quoted.vM.key });
+    }
   }
 };
 
