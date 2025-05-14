@@ -9,7 +9,7 @@ const handler = async (m, { conn, participants, command, usedPrefix }) => {
   const mentionedJid = m.message.extendedTextMessage?.contextInfo?.mentionedJid[0] || m.message.extendedTextMessage?.contextInfo?.participant;
   
   if (!mentionedJid) {
-    return m.reply('*[❗INFO❗] Etiqueta a una persona o responde a un mensaje para eliminar al usuario*');
+    return m.reply('*[❗] Etiqueta a una persona o responde a un mensaje para eliminar al usuario*');
   }
 
   // Verificar si el usuario es el bot mismo
@@ -39,6 +39,8 @@ const handler = async (m, { conn, participants, command, usedPrefix }) => {
   }
 };
 
+handler.help = ['kick']
+handler.tags = ['group']
 handler.command = /^(kick|echar|hechar|sacar)$/i;
 handler.admin = handler.group = handler.botAdmin = true;
 
