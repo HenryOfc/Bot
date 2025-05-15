@@ -40,7 +40,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
   const proxy = text.trim(); // Obtener el proxy que se pasa después del comando
 
   if (!proxy) {
-    return conn.reply(m.chat, "Por favor, envía un proxy en formato: /proxy ip:puerto", m);
+    return conn.reply(m.chat, "🔰 Por favor, envía un proxy en formato: /proxy ip:puerto", m);
   }
 
   // Verificar si la proxy está viva
@@ -50,17 +50,18 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
     // Si el proxy está vivo, obtener información adicional de la IP
     const infoIP = await obtenerInfoIP(proxy);
     if (infoIP) {
-      const info = `El proxy ${proxy} está vivo.\nInformación de la IP: \n País: ${infoIP.country}\n Ciudad: ${infoIP.city}\n Región: ${infoIP.region}`;
+      const info = `❇️ *Proxy* ${proxy} Live ✅️\n🍀 *_Información_*: \n ❇️ *País:* ${infoIP.country}\n ❇️*Ciudad:* ${infoIP.city}\n *Región:* ${infoIP.region}`;
       conn.reply(m.chat, info, m);
     } else {
-      conn.reply(m.chat, `El proxy ${proxy} está vivo, pero no se pudo obtener la información de la IP.`, m);
+      conn.reply(m.chat, `❇️ *Proxy* ${proxy} Live ✅️, pero no se pudo obtener la información de la IP.`, m);
     }
   } else {
     // Si el proxy está muerto o no se puede conectar
-    conn.reply(m.chat, `El proxy ${proxy} está muerto o no se puede conectar.`, m);
+    conn.reply(m.chat, `❇️ *Proxy* ${proxy} Declined ❌️.`, m);
   }
 };
 
 handler.command = ['proxy']; // Asociamos el comando "/proxy" con el handler
-
+handler.tags = ['bin']
+handler.help = ['proxy']
 export default handler;
