@@ -50,7 +50,7 @@ let handler = async (m, { conn, command, text, args, usedPrefix }) => {
     // Si el proxy está vivo, obtener información adicional de la IP
     const infoIP = await obtenerInfoIP(proxy);
     if (infoIP) {
-      const info = `🧨 *Proxy* ${proxy} Live ✅️\n🍀 *_Información_* 🍀: \n ❇️ *País:* ${infoIP.country}\n ❇️ *Ciudad:* ${infoIP.city}\n❇️ *Región:* ${infoIP.region}`;
+      const info = `🧨 *Proxy* ${proxy} Live ✅️\n🍀 *_Información_* 🍀: \n ❇️ *País:* ${infoIP.country}\n ❇️ *Ciudad:* ${infoIP.city}\n ❇️ *Región:* ${infoIP.region}`;
       conn.reply(m.chat, info, m);
     } else {
       conn.reply(m.chat, `🧨 *Proxy* ${proxy} Live ✅️, pero no se pudo obtener la información de la IP.`, m);
